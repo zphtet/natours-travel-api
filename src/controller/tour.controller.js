@@ -1,18 +1,18 @@
 const TourModel = require('../model/tourModel');
 
 function createMiddleware(req, res, next) {
-  if (!req.body.title) {
-    return res.send({
-      status: 'fail',
-      message: 'title is required',
-    });
-  }
-  if (req.body.title.length < 5) {
-    return res.send({
-      status: 'fail',
-      message: 'title must be greter than 5 ',
-    });
-  }
+  // if (!req.body.title) {
+  //   return res.send({
+  //     status: 'fail',
+  //     message: 'title is required',
+  //   });
+  // }
+  // if (req.body.title.length < 5) {
+  //   return res.send({
+  //     status: 'fail',
+  //     message: 'title must be greter than 5 ',
+  //   });
+  // }
 
   next();
 }

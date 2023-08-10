@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const tourRouter = require('./src/routes/tourRouter');
-
 const PORT = 8000;
 
 require('dotenv').config();
@@ -18,6 +17,9 @@ async function DBconnect() {
     await mongoose.connect(
       `mongodb+srv://zinpainghtet215108:${process.env.DB_USER_PASSWORD}@cluster0.cyjpa19.mongodb.net/natours`
     );
+    //localhost:27017/natours
+    // mongodb:
+    // await mongoose.connect('mongodb://localhost:27017/natours');
     console.log(`DB connect success`);
     return true;
   } catch (err) {
@@ -29,6 +31,7 @@ async function DBconnect() {
 async function startServer() {
   if (!(await DBconnect()))
     return console.log('Error occured while connecting to DB');
+
   app.listen(PORT, () => {
     console.log(`App is listening on port ${PORT}`);
   });
