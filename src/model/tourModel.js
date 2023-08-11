@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const tourSchema = new mongoose.Schema({
   name: {
     type: String,
+
     required: [true, 'A tour must have name '],
     trim: true,
     unique: true,
