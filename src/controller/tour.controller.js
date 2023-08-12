@@ -2,18 +2,6 @@ const TourModel = require('../model/tourModel');
 
 // Middleware Functions
 function createMiddleware(req, res, next) {
-  // if (!req.body.title) {
-  //   return res.send({
-  //     status: 'fail',
-  //     message: 'title is required',
-  //   });
-  // }
-  // if (req.body.title.length < 5) {
-  //   return res.send({
-  //     status: 'fail',
-  //     message: 'title must be greter than 5 ',
-  //   });
-  // }
   next();
 }
 
@@ -159,6 +147,103 @@ async function getTours(req, res) {
   }
 }
 
+// getStats
+
+async function getTourStats(req, res) {
+  console.log('TOur stats work');
+  try {
+    const stats = await TourModel.aggregate([
+      {
+        $match: { price: { $gt: 1000 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          ratingAverage: { $avg: '$ratingsAverage' },
+          totalDuration: { $sum: '$duration' },
+          averageSize: { $avg: '$maxGroupSize' },
+          averagePrice: { $avg: '$price' },
+        },
+      },
+      {
+        $sort: { averagePrice: -1 },
+      },
+    ]);
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    return res.status(400).json({
+      status: 'error',
+      message: err,
+    });
+  }
+}
+const yearArr = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'April',
+  'May',
+  'Jun',
+  'July',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+async function getMonthlyPlan(req, res) {
+  console.log('GetMonyhlyPlan');
+  const { year } = req.params;
+  console.log(year);
+  try {
+    const monthlyPlan = await TourModel.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          num: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      
+      {
+        $addFields: { month: '$_id' },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      count: monthlyPlan.length || 1,
+      data: {
+        monthlyPlan,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err,
+    });
+  }
+}
+
 // findByIdAndDelete()
 module.exports = {
   createTour,
@@ -168,4 +253,6 @@ module.exports = {
   createMiddleware,
   getTours,
   topFiveMiddleware,
+  getTourStats,
+  getMonthlyPlan,
 };
