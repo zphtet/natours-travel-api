@@ -22,11 +22,13 @@ const importData = async () => {
   //   console.log(data);
   await TourModel.create(data);
   console.log('Completed import');
+  process.exit();
 };
 
 const deleteData = async () => {
   await TourModel.deleteMany({});
   console.log('deleted successful');
+  process.exit();
 };
 
 let command = process.argv[2];

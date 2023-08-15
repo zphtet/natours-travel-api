@@ -6,6 +6,12 @@ const globalErrorHandler = require('./src/controller/error.controller');
 const AppError = require('./src/utils/AppError');
 const PORT = 8000;
 
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNCAUGHT ERROR 💥 Shutting down');
+  process.exit(1);
+});
+
 require('dotenv').config();
 
 // middlewares
@@ -40,13 +46,22 @@ async function DBconnect() {
   }
 }
 
+let server;
 async function startServer() {
   if (!(await DBconnect()))
     return console.log('Error occured while connecting to DB');
 
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     console.log(`App is listening on port ${PORT}`);
   });
 }
 
 startServer();
+
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLER REJECT 💥 Shutting down');
+  server.close(() => {
+    process.exit(1);
+  });
+});
