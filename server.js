@@ -64,7 +64,7 @@ startServer();
 
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
-  console.log('UNHANDLER REJECT 💥 Shutting down');
+  console.log('UNHANDLED REJECT 💥 Shutting down');
   server.close(() => {
     process.exit(1);
   });

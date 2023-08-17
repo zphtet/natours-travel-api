@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is requried'],
     minlength: 4,
+    select: false,
   },
   confirmPassword: {
     type: String,
@@ -31,7 +32,9 @@ const userSchema = new mongoose.Schema({
       },
       message: 'Password must be the same',
     },
+    select: false,
   },
+  changedAt: { type: Date, default: new Date() },
 });
 
 // document middleware
