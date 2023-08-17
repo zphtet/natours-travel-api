@@ -17,7 +17,6 @@ const ErrorProd = (err, res) => {
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'fail';
-  console.log(process.env.NODE_ENV + 'from controller');
   if (process.env.NODE_ENV === 'development') {
     return ErrorDev(err, res);
   } else {
