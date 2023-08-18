@@ -9,11 +9,17 @@ const {
   getTourStats,
   getMonthlyPlan,
 } = require('../controller/tour.controller');
+
+const { protect, checkPermission } = require('../controller/user.controller');
+
 const router = express.Router();
 
 router.route('/tours').post(createMiddleware, createTour).get(getTours);
 router.route('/tours/top-5-cheap-tours').get(topFiveMiddleware, getTours);
-router.route('/tours/:id').delete(deleteTour).put(updateTour);
+router
+  .route('/tours/:id')
+  .delete(protect, checkPermission('admin', 'lead-guide'), deleteTour)
+  .put(updateTour);
 router.route('/tours/get-stats').get(getTourStats);
 router.route('/tours/monthly-plan/:year').get(getMonthlyPlan);
 

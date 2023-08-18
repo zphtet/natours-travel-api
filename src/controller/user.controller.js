@@ -13,12 +13,14 @@ const getToken = (id) => {
 // controllers
 
 const signup = catchAsync(async function (req, res, next) {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword, role, photo } = req.body;
   const returnUser = await userModel.create({
     name,
     email,
     password,
     confirmPassword,
+    role,
+    photo,
   });
 
   const token = getToken(returnUser._id);
@@ -64,6 +66,13 @@ const getAllUsers = catchAsync(async function (req, res, next) {
   });
 });
 
+const deleteAllUsers = catchAsync(async function (req, res, next) {
+  await userModel.deleteMany({});
+  return res.status(200).json({
+    status: 'success',
+  });
+});
+
 const updateUser = catchAsync(async function (req, res, next) {
   const { id } = req.params;
   const data = await userModel.findByIdAndUpdate(
@@ -106,12 +115,28 @@ const protect = catchAsync(async (req, res, next) => {
       new AppError('jwt no longer valid because of user updated', 401)
     );
 
+  // pass the user to the next middleware
+  req.user = user;
   next();
 });
+
+const checkPermission = (...roles) => {
+  return (req, res, next) => {
+    let currentRole = req.user.role;
+    if (!roles.includes(currentRole))
+      return next(
+        new AppError('This user is not allowed for this action', 403)
+      );
+    next();
+  };
+};
+
 module.exports = {
   signup,
   signin,
   getAllUsers,
   protect,
   updateUser,
+  deleteAllUsers,
+  checkPermission,
 };
