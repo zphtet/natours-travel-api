@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -39,7 +41,9 @@ const userSchema = new mongoose.Schema({
     },
     select: false,
   },
-  changedAt: { type: Date, default: new Date() },
+  changedAt: { type: Date, default: Date.now() },
+  resetPasswordToken: String,
+  resetTokenExpire: Date,
 });
 
 // document middleware
@@ -48,6 +52,23 @@ userSchema.pre('save', async function (next) {
   this.confirmPassword = null;
   next();
 });
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password')) return next();
+  this.changedAt = Date.now();
+  next();
+});
+
+// instance Methods
+userSchema.methods.passwordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  const resetTokenExpire = Date.now() + 10 * 1000 * 60;
+  return { resetToken, resetPasswordToken, resetTokenExpire };
+};
 
 const userModel = mongoose.model('users', userSchema);
 

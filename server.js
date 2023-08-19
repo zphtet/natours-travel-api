@@ -63,7 +63,7 @@ async function startServer() {
 startServer();
 
 process.on('unhandledRejection', (err) => {
-  console.log(err.name, err.message);
+  console.log(err.name, err.message , err.stack);
   console.log('UNHANDLED REJECT 💥 Shutting down');
   server.close(() => {
     process.exit(1);

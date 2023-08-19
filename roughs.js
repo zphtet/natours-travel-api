@@ -1,17 +1,5 @@
-console.log('hello');
+const crypto = require('crypto');
 
-const arr = ['-price'];
+const token = crypto.randomBytes(32).toString('hex')
 
-const obj = arr.reduce((accum, val) => {
-  if (val[0] === '-') {
-    return {
-        [val.slice(1)] : -1
-     }
-  }
-  return {
-    ...accum,
-    [val]: 1,
-  };
-}, {});
-
-console.log(obj);
+console.log(token)
