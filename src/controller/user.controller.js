@@ -170,8 +170,11 @@ const resetPassword = catchAsync(async function (req, res, next) {
   // user.changedAt = Date.now();
   await user.save();
 
+  let jwtToken = getToken(user._id);
+
   return res.status(200).json({
     status: 'success',
+    jwt: jwtToken,
   });
 });
 
