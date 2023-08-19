@@ -218,7 +218,7 @@ const updatePasswrod = catchAsync(async function (req, res, next) {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
   let jwtToken = req.headers.authorization?.split(' ')[1];
-  console.log(jwtToken);
+  // console.log(jwtToken);
   // check token
   if (!jwtToken) return next(new AppError('jwt token not defined', 401));
   // verify token
@@ -243,6 +243,55 @@ const updatePasswrod = catchAsync(async function (req, res, next) {
   });
 });
 
+// update username and emial
+
+const updateInfo = catchAsync(async function (req, res, next) {
+  const { name, email } = req.body;
+  const updateObj = {};
+
+  if (name) updateObj.name = name;
+  if (email) updateObj.email = email;
+
+  let jwtToken = req.headers.authorization?.split(' ')[1];
+  if (!jwtToken) return next(new AppError('jwt token not defined', 401));
+  // verify token
+  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
+  if (!decoded.id) return next(new AppError('Invalid Id', 401));
+
+  const userId = decoded.id;
+  // userId = req.user.id
+
+  const user = await userModel.findByIdAndUpdate(
+    userId,
+    {
+      ...updateObj,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  return res.status(200).json({
+    status: 'success',
+    user,
+  });
+});
+
+const deleteAcc = catchAsync(async function (req, res, next) {
+  let jwtToken = req.headers.authorization?.split(' ')[1];
+  if (!jwtToken) return next(new AppError('jwt token not defined', 401));
+  // verify token
+  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
+  if (!decoded.id) return next(new AppError('Invalid Id', 401));
+
+  const userId = decoded.id;
+  await userModel.findByIdAndUpdate(userId, { active: false });
+
+  return res.status(200).json({
+    status: 'success',
+  });
+});
+
 module.exports = {
   signup,
   signin,
@@ -254,4 +303,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   updatePasswrod,
+  updateInfo,
+  deleteAcc,
 };
