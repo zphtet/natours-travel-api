@@ -8,6 +8,7 @@ const {
   deleteAllUsers,
   forgotPassword,
   resetPassword,
+  updatePasswrod,
 } = require('../controller/user.controller');
 
 const router = express.Router();
@@ -19,5 +20,6 @@ router.route('/users/:id').put(updateUser);
 
 router.route('/forgotpassword').post(forgotPassword);
 router.route('/resetpassword/:token').patch(resetPassword);
+router.route('/updatepassword').patch(updatePasswrod);
 
 module.exports = router;

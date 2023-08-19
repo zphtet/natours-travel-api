@@ -214,6 +214,35 @@ const checkPermission = (...roles) => {
   };
 };
 
+const updatePasswrod = catchAsync(async function (req, res, next) {
+  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+  let jwtToken = req.headers.authorization?.split(' ')[1];
+  console.log(jwtToken);
+  // check token
+  if (!jwtToken) return next(new AppError('jwt token not defined', 401));
+  // verify token
+  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
+  // user still exist
+  const user = await userModel.findOne({ _id: decoded.id }).select('+password');
+  if (!user) return next(new AppError('User no longer exist', 404));
+  const isPasswordEqual = await bcrypt.compare(currentPassword, user.password);
+  if (!isPasswordEqual)
+    return next(new AppError('Incorrect current password', 400));
+
+  if (newPassword !== confirmNewPassword)
+    return next(
+      new AppError('new password and confirm password are not the same', 404)
+    );
+  user.password = newPassword;
+  user.confirmPassword = confirmNewPassword;
+  await user.save();
+
+  return res.status(200).json({
+    status: 'success',
+  });
+});
+
 module.exports = {
   signup,
   signin,
@@ -224,4 +253,5 @@ module.exports = {
   checkPermission,
   forgotPassword,
   resetPassword,
+  updatePasswrod,
 };
