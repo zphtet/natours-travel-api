@@ -5,7 +5,17 @@ const tourRouter = require('./src/routes/tourRouter');
 const userRouter = require('./src/routes/userRouter');
 const globalErrorHandler = require('./src/controller/error.controller');
 const AppError = require('./src/utils/AppError');
+const rateLimit = require('express-rate-limit')
+const helmet = require('helmet')
+const mongoSanitize = require('express-mongo-sanitize')
+const hpp = require('hpp')
 const PORT = 8000;
+
+const limiter = rateLimit({
+	windowMs: 60 * 60 * 1000, // 1 hour
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+})
+
 
 process.on('uncaughtException', (err) => {
   console.log(err.name, err.message);
@@ -15,9 +25,26 @@ process.on('uncaughtException', (err) => {
 
 require('dotenv').config();
 
-// middlewares
-app.use(express.json());
+// GLOBAL MIDDLEWARE
+
+// prse json file
+app.use(express.json({limit : '10kb'}));
+// sever static files
 app.use(express.static(`${__dirname}/public`));
+
+//limit rate
+app.use(limiter)
+
+// set http response headers
+app.use(helmet())
+
+// sanitize input
+app.use(mongoSanitize())
+
+// h parameter pollution
+app.use(hpp())
+
+
 
 // ROUTES
 app.route('/').get((req, res) => {
