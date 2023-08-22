@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 // const mongoose = require('../../server');
+const userModel = require('./userModel');
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -95,6 +96,13 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'users',
+      },
+    ],
   },
   {
     virtuals: {
@@ -113,8 +121,6 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-const TourModel = mongoose.model('tours', tourSchema);
-
 // Virtual
 // tourSchema.virtual('slug').get(function () {
 //   return this.name.toLowerCase().split(' ').join('/');
@@ -122,13 +128,30 @@ const TourModel = mongoose.model('tours', tourSchema);
 
 // DOCUMENT MIDDLEWARE
 tourSchema.pre('save', function (next) {
-  console.log(this);
   this.priceDiscount = 1.2 * this.price;
   next();
 });
+
+// tourSchema.pre('save', async function (next) {
+//   console.log('pre save work');
+//   let allPromises = this.guides.map(async (id) => await userModel.findById(id));
+//   this.guides = await Promise.all(allPromises);
+//   next();
+// });
 
 tourSchema.post('save', function (doc, next) {
   console.log(doc);
 });
 
+// QUERY MIDDLEWARES
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -changedAt',
+  });
+  next();
+});
+
+const TourModel = mongoose.model('tours', tourSchema);
 module.exports = TourModel;

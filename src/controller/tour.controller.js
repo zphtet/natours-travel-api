@@ -111,6 +111,7 @@ const getTours = catchAsync(async function (req, res, next) {
     .select(fieldObj)
     .skip(skip)
     .limit(limit);
+
   return res.status(200).json({
     status: 'success',
     count: tours.length,
