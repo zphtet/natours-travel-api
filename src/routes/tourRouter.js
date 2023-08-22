@@ -10,7 +10,7 @@ const {
   getMonthlyPlan,
 } = require('../controller/tour.controller');
 
-const { protect, checkPermission } = require('../controller/user.controller');
+const { protect, checkPermission } = require('../controller/auth.controller');
 
 const router = express.Router();
 

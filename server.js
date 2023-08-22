@@ -3,6 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const tourRouter = require('./src/routes/tourRouter');
 const userRouter = require('./src/routes/userRouter');
+const authRouter = require('./src/routes/authRouter')
 const globalErrorHandler = require('./src/controller/error.controller');
 const AppError = require('./src/utils/AppError');
 const rateLimit = require('express-rate-limit')
@@ -42,7 +43,7 @@ app.use(helmet())
 app.use(mongoSanitize())
 
 // h parameter pollution
-app.use(hpp())
+app.use(hpp('/',hpp()))
 
 
 
@@ -53,7 +54,7 @@ app.route('/').get((req, res) => {
 
 app.use(tourRouter);
 app.use(userRouter);
-
+app.use(authRouter)
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find this route ${req.originalUrl}`, 404));
 });
