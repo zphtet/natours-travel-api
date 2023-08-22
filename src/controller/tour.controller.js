@@ -121,6 +121,17 @@ const getTours = catchAsync(async function (req, res, next) {
   });
 });
 
+const getTour = catchAsync(async function (req, res) {
+  const { id } = req.params;
+
+  const tour = await TourModel.findById(id).populate('reviews');
+  if (!tour) return next(new AppError('No tour found with that ID', 404));
+  return res.status(200).json({
+    status: 'success',
+    tour,
+  });
+});
+
 // getStats
 
 const getTourStats = catchAsync(async function (req, res, next) {
@@ -200,4 +211,5 @@ module.exports = {
   topFiveMiddleware,
   getTourStats,
   getMonthlyPlan,
+  getTour,
 };

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-// const mongoose = require('../../server');
-const userModel = require('./userModel');
+
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -111,6 +110,13 @@ const tourSchema = new mongoose.Schema(
           return this.name.toLowerCase().split(' ').join('-');
         },
       },
+      reviews: {
+        options: {
+          ref: 'reviews',
+          localField: '_id',
+          foreignField: 'tour',
+        },
+      },
     },
     toJSON: {
       virtuals: true,
@@ -124,6 +130,12 @@ const tourSchema = new mongoose.Schema(
 // Virtual
 // tourSchema.virtual('slug').get(function () {
 //   return this.name.toLowerCase().split(' ').join('/');
+// });
+
+// tourSchema.virtual('reviews', {
+//   ref: 'reviews',
+//   localField: '_id',
+//   foreignField: 'tour',
 // });
 
 // DOCUMENT MIDDLEWARE

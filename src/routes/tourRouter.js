@@ -8,6 +8,7 @@ const {
   topFiveMiddleware,
   getTourStats,
   getMonthlyPlan,
+  getTour,
 } = require('../controller/tour.controller');
 
 const { protect, checkPermission } = require('../controller/auth.controller');
@@ -18,6 +19,7 @@ router.route('/tours').post(createMiddleware, createTour).get(getTours);
 router.route('/tours/top-5-cheap-tours').get(topFiveMiddleware, getTours);
 router
   .route('/tours/:id')
+  .get(getTour)
   .delete(protect, checkPermission('admin', 'lead-guide'), deleteTour)
   .put(updateTour);
 router.route('/tours/get-stats').get(getTourStats);

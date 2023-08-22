@@ -3,20 +3,20 @@ const app = express();
 const mongoose = require('mongoose');
 const tourRouter = require('./src/routes/tourRouter');
 const userRouter = require('./src/routes/userRouter');
-const authRouter = require('./src/routes/authRouter')
+const authRouter = require('./src/routes/authRouter');
+const reviewRouter = require('./src/routes/reviewRouter');
 const globalErrorHandler = require('./src/controller/error.controller');
 const AppError = require('./src/utils/AppError');
-const rateLimit = require('express-rate-limit')
-const helmet = require('helmet')
-const mongoSanitize = require('express-mongo-sanitize')
-const hpp = require('hpp')
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 const PORT = 8000;
 
 const limiter = rateLimit({
-	windowMs: 60 * 60 * 1000, // 1 hour
-	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-})
-
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+});
 
 process.on('uncaughtException', (err) => {
   console.log(err.name, err.message);
@@ -29,23 +29,21 @@ require('dotenv').config();
 // GLOBAL MIDDLEWARE
 
 // prse json file
-app.use(express.json({limit : '10kb'}));
+app.use(express.json({ limit: '10kb' }));
 // sever static files
 app.use(express.static(`${__dirname}/public`));
 
 //limit rate
-app.use(limiter)
+app.use(limiter);
 
 // set http response headers
-app.use(helmet())
+app.use(helmet());
 
 // sanitize input
-app.use(mongoSanitize())
+app.use(mongoSanitize());
 
 // h parameter pollution
-app.use(hpp('/',hpp()))
-
-
+app.use(hpp('/', hpp()));
 
 // ROUTES
 app.route('/').get((req, res) => {
@@ -54,7 +52,9 @@ app.route('/').get((req, res) => {
 
 app.use(tourRouter);
 app.use(userRouter);
-app.use(authRouter)
+app.use(authRouter);
+app.use(reviewRouter);
+
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find this route ${req.originalUrl}`, 404));
 });
@@ -91,7 +91,7 @@ async function startServer() {
 startServer();
 
 process.on('unhandledRejection', (err) => {
-  console.log(err.name, err.message , err.stack);
+  console.log(err.name, err.message, err.stack);
   console.log('UNHANDLED REJECT 💥 Shutting down');
   server.close(() => {
     process.exit(1);
