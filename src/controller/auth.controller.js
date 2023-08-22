@@ -228,4 +228,4 @@ const signup = catchAsync(async function (req, res, next) {
     checkPermission,
     updatePasswrod,
     deleteAcc
-  }
+  }  

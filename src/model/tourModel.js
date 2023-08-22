@@ -73,6 +73,28 @@ const tourSchema = new mongoose.Schema(
     startDates: {
       type: [Date],
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        emum: ['Point'],
+      },
+      description: String,
+      coordinates: [Number],
+      address: String,
+    },
+    locations: [
+      {
+        description: String,
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        day: Number,
+      },
+    ],
   },
   {
     virtuals: {
@@ -91,12 +113,6 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-const testSchema = new mongoose.Schema({
-  name: String,
-  duration: Number,
-  difficulty: String,
-});
-
 const TourModel = mongoose.model('tours', tourSchema);
 
 // Virtual
@@ -114,4 +130,5 @@ tourSchema.pre('save', function (next) {
 tourSchema.post('save', function (doc, next) {
   console.log(doc);
 });
+
 module.exports = TourModel;

@@ -17,7 +17,7 @@ mongoose.connect(
 app.listen(PORT, () => {
   console.log(`App is listening on port ${PORT}`);
 });
-const data = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`));
+const data = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`));
 const importData = async () => {
   //   console.log(data);
   await TourModel.create(data);
