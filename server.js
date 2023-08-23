@@ -51,7 +51,7 @@ app.route('/').get((req, res) => {
 });
 
 app.use('/tours', tourRouter);
-app.use(userRouter);
+app.use( '/users',userRouter);
 app.use(authRouter);
 app.use('/reviews', reviewRouter);
 

@@ -2,6 +2,7 @@ const reviewModel = require('../model/reviewModel');
 const TourModel = require('../model/tourModel');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
+const { deleteOneById , createOne , updateOneById , getOneById, getAll} = require('./factory');
 // Middleware Functions
 function createMiddleware(req, res, next) {
   next();
@@ -13,36 +14,10 @@ function topFiveMiddleware(req, res, next) {
   next();
 }
 
-// add review - get review
-// tours / :id / reeviews
-
-const createReview = catchAsync(async function (req, res) {
-  const { tourId } = req.params;
-
-  const reviewDoc = {
-    ...req.body,
-    user: req.user._id,
-    tour: tourId,
-  };
-
-  const newReview = await reviewModel.create(reviewDoc);
-
-  return res.status(200).json({
-    status: 'success',
-    review: newReview,
-  });
-});
 
 //Controller functions
 
-const createTour = catchAsync(async function (req, res, next) {
-  const doc = req.body;
-  await TourModel.create(doc);
-  return res.status(200).json({
-    status: 'success',
-    data: doc,
-  });
-});
+
 const deleteTours = catchAsync(async function (req, res, next) {
   const condition = req.body;
   await TourModel.deleteMany(condition);
@@ -51,107 +26,6 @@ const deleteTours = catchAsync(async function (req, res, next) {
   });
 });
 
-const deleteTour = catchAsync(async function (req, res, next) {
-  const id = req.params.id;
-
-  const tour = await TourModel.findByIdAndDelete(id);
-  if (!tour) {
-    return next(new AppError('Not found tour with that ID', 404));
-  }
-  return res.status(200).json({
-    status: 'success',
-  });
-});
-
-const updateTour = catchAsync(async function (req, res, next) {
-  const { id } = req.params;
-  const data = await TourModel.findByIdAndUpdate(id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!data) {
-    return next(new AppError('Not found tour with that ID', 404));
-  }
-  return res.status(200).json({
-    status: 'success',
-    data,
-  });
-});
-
-function sortByValue(query) {
-  let sortBy = query['sort'] || null;
-  return (
-    sortBy?.split(',').reduce((accum, val) => {
-      if (val[0] === '-') {
-        return {
-          ...accum,
-          [val.slice(1)]: -1,
-        };
-      }
-      return {
-        ...accum,
-        [val]: 1,
-      };
-    }, {}) || {}
-  );
-}
-
-function pagination(query) {
-  let page = query['page'] * 1 || 1;
-  let limit = query['limit'] * 1 || 3;
-  let skip = limit * (page - 1);
-  return {
-    limit,
-    skip,
-  };
-}
-
-const getTours = catchAsync(async function (req, res, next) {
-  let queryObj = JSON.stringify(req.query).replace(
-    /gt|gte|lte|lt|eq|ne/gi,
-    (val) => `$${val}`
-  );
-  query = JSON.parse(queryObj);
-
-  // sort
-  const sortByObj = sortByValue(query);
-  // limit
-  let fieldObj = query['fields'] ? query['fields'].split(',').join(' ') : '';
-  // pagination
-  const { limit, skip } = pagination(query);
-  // delete fileds from querys
-  ['sort', 'fields', 'limit', 'skip', 'page'].forEach(
-    (field) => delete query[field]
-  );
-
-  const tours = await TourModel.find({ ...query })
-    .sort({
-      cretatedAt: 1,
-      ...sortByObj,
-    })
-    .select(fieldObj)
-    .skip(skip)
-    .limit(limit);
-
-  return res.status(200).json({
-    status: 'success',
-    count: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-const getTour = catchAsync(async function (req, res) {
-  const { id } = req.params;
-
-  const tour = await TourModel.findById(id).populate('reviews');
-  if (!tour) return next(new AppError('No tour found with that ID', 404));
-  return res.status(200).json({
-    status: 'success',
-    tour,
-  });
-});
 
 // getStats
 
@@ -221,6 +95,14 @@ const getMonthlyPlan = catchAsync(async function (req, res, next) {
   });
 });
 
+
+// from factory funs
+
+const createTour = createOne(TourModel)
+const deleteTour = deleteOneById(TourModel);
+const updateTour = updateOneById(TourModel)
+const getTour = getOneById(TourModel , {path : 'reviews'})
+const getTours = getAll(TourModel)
 // findByIdAndDelete()
 module.exports = {
   createTour,
@@ -233,5 +115,4 @@ module.exports = {
   getTourStats,
   getMonthlyPlan,
   getTour,
-  createReview,
 };

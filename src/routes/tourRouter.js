@@ -16,16 +16,18 @@ const { protect, checkPermission } = require('../controller/auth.controller');
 
 const router = express.Router();
 
-router.use('/:tourId/reviews', reviewRouter);
 
-router.route('').post(createMiddleware, createTour).get(getTours);
+
+router.route('/').post(createMiddleware, createTour).get(getTours);
 router.route('/top-5-cheap-tours').get(topFiveMiddleware, getTours);
 router
   .route('/:id')
   .get(getTour)
   .delete(protect, checkPermission('admin', 'lead-guide'), deleteTour)
-  .put(updateTour);
+  .patch(updateTour);
 router.route('/get-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 module.exports = router;
