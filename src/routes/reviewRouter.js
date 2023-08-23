@@ -4,8 +4,13 @@ const {
   createReview,
 } = require('../controller/review.controller');
 
-const router = express.Router();
+const { protect, checkPermission } = require('../controller/auth.controller');
 
-router.route('/reviews').get(getAllReviews).post(createReview);
+const router = express.Router({ mergeParams: true });
+
+router
+  .route('/')
+  .get(getAllReviews)
+  .post(protect, checkPermission('user'), createReview);
 
 module.exports = router;

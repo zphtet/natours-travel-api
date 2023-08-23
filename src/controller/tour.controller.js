@@ -1,3 +1,4 @@
+const reviewModel = require('../model/reviewModel');
 const TourModel = require('../model/tourModel');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
@@ -11,6 +12,26 @@ function topFiveMiddleware(req, res, next) {
   req.query.limit = 5;
   next();
 }
+
+// add review - get review
+// tours / :id / reeviews
+
+const createReview = catchAsync(async function (req, res) {
+  const { tourId } = req.params;
+
+  const reviewDoc = {
+    ...req.body,
+    user: req.user._id,
+    tour: tourId,
+  };
+
+  const newReview = await reviewModel.create(reviewDoc);
+
+  return res.status(200).json({
+    status: 'success',
+    review: newReview,
+  });
+});
 
 //Controller functions
 
@@ -212,4 +233,5 @@ module.exports = {
   getTourStats,
   getMonthlyPlan,
   getTour,
+  createReview,
 };

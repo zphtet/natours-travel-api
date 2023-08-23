@@ -50,10 +50,10 @@ app.route('/').get((req, res) => {
   return res.send('<h1> This is Natour API Home </h1>');
 });
 
-app.use(tourRouter);
+app.use('/tours', tourRouter);
 app.use(userRouter);
 app.use(authRouter);
-app.use(reviewRouter);
+app.use('/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find this route ${req.originalUrl}`, 404));
