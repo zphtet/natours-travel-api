@@ -6,7 +6,9 @@ const {
   deleteUser,
   setChangedAt,
   filterOnlyEmailName,
-  getUser
+  getUser,
+  getMe,
+  getMeId
 } = require('../controller/user.controller');
 
 const { protect, checkPermission } = require('../controller/auth.controller');
@@ -15,6 +17,7 @@ const router = express.Router();
 
 router.route('/').get(protect, getAllUsers)
 router.route('/updateinfo').patch(filterOnlyEmailName,updateInfo);
+router.route('/me').get(protect,getMeId,getMe)
 router
   .route('/:id')
   .get(getUser)

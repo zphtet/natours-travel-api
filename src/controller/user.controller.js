@@ -34,6 +34,11 @@ const filterOnlyEmailName = (req,res,next)=>{
 }
 
 
+const getMeId = (req , res , next)=>{
+      req.params.id = req.user._id;
+      next()
+}
+
 
 // get all users
 // const getAllUsers = catchAsync(async function (req, res, next) {
@@ -51,7 +56,7 @@ const filterOnlyEmailName = (req,res,next)=>{
 
 
 
-
+const getMe = getOneById(userModel)
 const updateInfo = updateOneById(userModel)
 const updateUser = updateOneById(userModel);
 const deleteUser = deleteOneById(userModel);
@@ -66,5 +71,7 @@ module.exports = {
   deleteUser,
   setChangedAt,
   filterOnlyEmailName,
-  getUser
+  getUser,
+  getMeId,
+  getMe
 };
