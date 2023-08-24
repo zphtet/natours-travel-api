@@ -80,7 +80,7 @@ const deleteOneById = (Model) =>
   
   function pagination(query) {
     let page = query['page'] * 1 || 1;
-    let limit = query['limit'] * 1 || 3;
+    let limit = query['limit'] * 1 || 100;
     let skip = limit * (page - 1);
     return {
       limit,

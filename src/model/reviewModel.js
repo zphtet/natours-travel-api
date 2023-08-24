@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const TourModel = require('./tourModel');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -33,6 +34,11 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+// create Index for one user - one review - one tour
+
+reviewSchema.index({tour : 1 , user : 1},{unique : true})
+
+
 // MIDDLEWARES
 // document middleware
 
@@ -54,6 +60,53 @@ reviewSchema.pre(/^find/, async function (next) {
 //   });
 //   next();
 // });
+
+
+
+// Static Method
+
+reviewSchema.statics.setRatingStatsToTour =async function(tourId){
+   const stats = await this.aggregate([
+    {
+      $match : {tour : tourId}
+    },
+    {
+      $group :{
+           _id : '$tour',
+           nRating : {$sum : 1},
+           avgRating : {$avg :'$rating' }
+      }
+    }
+   ])
+
+   await TourModel.findByIdAndUpdate(tourId,{
+    ratingsAverage : stats[0]?.avgRating || 4.5,
+    ratingsQuantity : stats[0]?.nRating || 0
+   })
+}
+
+
+// I want to update tour doc stats when relate reviews create / update / delete
+//for create i can use document middleware
+
+// for create
+reviewSchema.post('save',function(){
+    this.constructor.setRatingStatsToTour(this.tour);
+})
+
+
+// for update and delete 
+reviewSchema.pre(/^findOneAnd/, async function(next){
+   this.tour = await this.findOne().clone()
+  next()
+})
+
+reviewSchema.post(/^findOne/, async function(){
+    if(!this.tour) return;
+   await this.tour.constructor.setRatingStatsToTour(this.tour.tour)
+})
+
+
 
 // create MODEL
 const reviewModel = mongoose.model('reviews', reviewSchema);
