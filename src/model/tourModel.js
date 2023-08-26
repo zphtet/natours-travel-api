@@ -132,7 +132,7 @@ const tourSchema = new mongoose.Schema(
 
 // CREATE INDEX
 tourSchema.index({price : 1})
-
+tourSchema.index({startLocation : '2dsphere'})
 // Virtual
 // tourSchema.virtual('slug').get(function () {
 //   return this.name.toLowerCase().split(' ').join('/');
