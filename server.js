@@ -32,6 +32,8 @@ require('dotenv').config();
 app.use(express.json({ limit: '10kb' }));
 // sever static files
 app.use(express.static(`${__dirname}/public`));
+app.set('views', `${__dirname}/views`);
+app.set('view engine', 'pug');
 
 //limit rate
 app.use(limiter);
@@ -47,11 +49,28 @@ app.use(hpp('/', hpp()));
 
 // ROUTES
 app.route('/').get((req, res) => {
-  return res.send('<h1> This is Natour API Home </h1>');
+  return res.render('index', {
+    title: 'Exciting tours for adventurous people',
+    message: 'Sever-side rendering with pug engine',
+  });
+});
+
+app.route('/overview').get((req, res) => {
+  return res.render('overview', {
+    title: 'This is the overview page',
+    message: 'Sever-side rendering with pug engine',
+  });
+});
+
+app.route('/tour').get((req, res) => {
+  return res.render('tour', {
+    title: 'This is the single tour page',
+    message: 'Sever-side rendering with pug engine',
+  });
 });
 
 app.use('/tours', tourRouter);
-app.use( '/users',userRouter);
+app.use('/users', userRouter);
 app.use(authRouter);
 app.use('/reviews', reviewRouter);
 

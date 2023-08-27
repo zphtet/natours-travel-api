@@ -12,6 +12,7 @@
     "ndb": "^1.1.5",
     "nodemailer": "^6.9.4",
     "nodemon": "^3.0.1",
+    "pug": "^3.0.2",
     "validator": "^13.11.0"
   },
   "scripts": {
