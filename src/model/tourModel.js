@@ -32,7 +32,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be greater than or equal 1'],
       max: [5, 'Rating must be less than or equal 5'],
-      set : val => Math.round(val * 10)/10,
+      set: (val) => Math.round(val * 10) / 10,
       // get : val => Math.round(val * 10)/10
     },
     ratingsQuantity: {
@@ -98,6 +98,10 @@ const tourSchema = new mongoose.Schema(
       },
     ],
 
+    slug: {
+      type: String,
+    },
+
     guides: [
       {
         type: mongoose.Schema.ObjectId,
@@ -107,11 +111,11 @@ const tourSchema = new mongoose.Schema(
   },
   {
     virtuals: {
-      slug: {
-        get() {
-          return this.name.toLowerCase().split(' ').join('-');
-        },
-      },
+      // slug: {
+      //   get() {
+      //     return this.name.toLowerCase().split(' ').join('-');
+      //   },
+      // },
       reviews: {
         options: {
           ref: 'reviews',
@@ -129,10 +133,9 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
-
 // CREATE INDEX
-tourSchema.index({price : 1})
-tourSchema.index({startLocation : '2dsphere'})
+tourSchema.index({ price: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 // Virtual
 // tourSchema.virtual('slug').get(function () {
 //   return this.name.toLowerCase().split(' ').join('/');
@@ -150,6 +153,11 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
+tourSchema.pre('save', function (next) {
+  this.slug = this.name.toLowerCase().split(' ').join('-');
+  next();
+});
+
 // tourSchema.pre('save', async function (next) {
 //   console.log('pre save work');
 //   let allPromises = this.guides.map(async (id) => await userModel.findById(id));
@@ -159,7 +167,7 @@ tourSchema.pre('save', function (next) {
 
 tourSchema.post('save', function (doc, next) {
   // console.log(doc);
-  next()
+  next();
 });
 
 // QUERY MIDDLEWARES
@@ -167,7 +175,7 @@ tourSchema.post('save', function (doc, next) {
 tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
-    select: '-__v -changedAt',
+    select: '-__v ',
   });
   next();
 });

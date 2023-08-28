@@ -10,20 +10,20 @@ const {
   getMonthlyPlan,
   getTour,
   getDistance,
-  getDistanceWithinByMile
+  getDistanceWithinByMile,
 } = require('../controller/tour.controller');
 const reviewRouter = require('./reviewRouter');
 
 const { protect, checkPermission } = require('../controller/auth.controller');
+const TourModel = require('../model/tourModel');
 
 const router = express.Router();
 
-
-
 router.route('/').post(createMiddleware, createTour).get(getTours);
+
 router.route('/top-5-cheap-tours').get(topFiveMiddleware, getTours);
-router.route('/getdistance/:lnglat').get(getDistance)
-router.route('/distwithin/:lnglat/:mi').get(getDistanceWithinByMile)
+router.route('/getdistance/:lnglat').get(getDistance);
+router.route('/distwithin/:lnglat/:mi').get(getDistanceWithinByMile);
 router
   .route('/:id')
   .get(getTour)

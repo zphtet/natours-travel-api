@@ -5,6 +5,7 @@ const tourRouter = require('./src/routes/tourRouter');
 const userRouter = require('./src/routes/userRouter');
 const authRouter = require('./src/routes/authRouter');
 const reviewRouter = require('./src/routes/reviewRouter');
+const viewRouter = require('./src/routes/viewRouter');
 const globalErrorHandler = require('./src/controller/error.controller');
 const AppError = require('./src/utils/AppError');
 const rateLimit = require('express-rate-limit');
@@ -36,7 +37,7 @@ app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 
 //limit rate
-app.use(limiter);
+// app.use(limiter);
 
 // set http response headers
 app.use(helmet());
@@ -48,31 +49,13 @@ app.use(mongoSanitize());
 app.use(hpp('/', hpp()));
 
 // ROUTES
-app.route('/').get((req, res) => {
-  return res.render('index', {
-    title: 'Exciting tours for adventurous people',
-    message: 'Sever-side rendering with pug engine',
-  });
-});
 
-app.route('/overview').get((req, res) => {
-  return res.render('overview', {
-    title: 'This is the overview page',
-    message: 'Sever-side rendering with pug engine',
-  });
-});
-
-app.route('/tour').get((req, res) => {
-  return res.render('tour', {
-    title: 'This is the single tour page',
-    message: 'Sever-side rendering with pug engine',
-  });
-});
-
-app.use('/tours', tourRouter);
-app.use('/users', userRouter);
-app.use(authRouter);
-app.use('/reviews', reviewRouter);
+// app.get('/hello', (req, res) => res.json({ status: 'success', tour: 'hell' }));
+app.use(viewRouter);
+app.use('/api/tours', tourRouter);
+app.use('/api/users', userRouter);
+app.use('/api', authRouter);
+app.use('/api/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find this route ${req.originalUrl}`, 404));
