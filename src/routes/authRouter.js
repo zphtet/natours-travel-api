@@ -8,10 +8,12 @@ const {
   resetPassword,
   updatePasswrod,
   deleteAcc,
+  logout,
 } = require('../controller/auth.controller');
 
 router.route('/signup').post(signup);
 router.route('/login').post(signin);
+router.route('/logout').get(logout);
 router.route('/forgotpassword').post(forgotPassword);
 router.route('/resetpassword/:token').patch(resetPassword);
 router.route('/updatepassword').patch(updatePasswrod);

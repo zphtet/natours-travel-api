@@ -71,11 +71,13 @@ const protect = catchAsync(async (req, res, next) => {
 
 const isLoggedIn = async (req, res, next) => {
   // get token from headers
-  const jwtCookie = req.headers?.cookie?.slice(
-    req.headers.cookie.indexOf('jwt') + 4
-  );
+  console.log(req.headers?.cookie);
+  const idx = req.headers?.cookie?.indexOf('jwt');
+  if (idx === -1 || !idx) return next();
+  const jwtCookie = req.headers?.cookie?.slice(idx + 4);
+
   // check token
-  if (!jwtCookie) return next();
+  if (!jwtCookie || jwtCookie == 'logouted') return next();
   // verify token
   const decoded = jwt.verify(jwtCookie, process.env.JWT_SECRET_KEY);
   // user still exist
@@ -253,6 +255,17 @@ const deleteAcc = catchAsync(async function (req, res, next) {
   });
 });
 
+const logout = (req, res) => {
+  const cookieOptions = {
+    expires: new Date(Date.now() + 60 * 1000),
+    httpOnly: true,
+  };
+  res.cookie('jwt', 'logouted', cookieOptions);
+  return res.status(200).json({
+    status: 'success',
+  });
+};
+
 module.exports = {
   signup,
   signin,
@@ -263,4 +276,5 @@ module.exports = {
   updatePasswrod,
   deleteAcc,
   isLoggedIn,
+  logout,
 };
