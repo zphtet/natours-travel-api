@@ -132,20 +132,23 @@ const getDistanceWithinByMile = catchAsync(async function (req, res, next) {
   const lnglatArr = lnglat.split(',');
   const lat = lnglatArr[1] * 1;
   const lng = lnglatArr[0] * 1;
-  const tours = await TourModel.find({
-    startLocation: {
-      $geoWithin: {
-        $centerSphere: [[lat, lng], (mi * 1) / 3963.2],
+  const tours = await TourModel.find(
+    {
+      startLocation: {
+        $geoWithin: {
+          $centerSphere: [[lat, lng], (mi * 1) / 3963.2],
+        },
       },
     },
-  }, {name : 1 , guides : 0 }).lean();
+    { name: 1, guides: 0 }
+  ).lean();
   return res.status(200).json({
-    status : 'success',
-    count : tours.length,
-    data : {
-      tours
-    }
-  })
+    status: 'success',
+    count: tours.length,
+    data: {
+      tours,
+    },
+  });
 });
 
 // from factory funs

@@ -9,9 +9,10 @@ exports.getOverview = catchAsync(async (req, res) => {
   const data = resp.data.data.data;
 
   return res.render('overview', {
-    title: 'This is the overview page',
+    title: 'All tours',
     message: 'Sever-side rendering with pug engine',
     data,
+    // user: req.user || null,
   });
 });
 
@@ -27,8 +28,14 @@ exports.getTour = catchAsync(async (req, res) => {
   //   tour: resp[0],
   // });
   return res.render('tour', {
-    title: 'This is the single tour page',
+    title: resp[0].name + ' tour',
     message: 'Sever-side rendering with pug engine',
     tour: resp[0],
+  });
+});
+
+exports.login = catchAsync(async (req, res) => {
+  return res.render('login', {
+    title: 'login page',
   });
 });

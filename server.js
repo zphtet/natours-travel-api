@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const cookieParser = require('cookie-parser');
 const PORT = 8000;
 
 const limiter = rateLimit({
@@ -31,6 +32,7 @@ require('dotenv').config();
 
 // prse json file
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 // sever static files
 app.use(express.static(`${__dirname}/public`));
 app.set('views', `${__dirname}/views`);
