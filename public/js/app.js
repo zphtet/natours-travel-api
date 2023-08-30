@@ -2,7 +2,7 @@ console.log('hello');
 
 import { login } from './login.js';
 import { Alert } from './alert.js';
-// loggin
+// login
 const btn = document.querySelector('.login-form .login');
 btn?.addEventListener('click', function (e) {
   const email = document.getElementById('email').value;
