@@ -3,7 +3,7 @@ console.log('hello');
 import { login } from './login.js';
 import { Alert } from './alert.js';
 // loggin
-const btn = document.querySelector('.login-form .btn');
+const btn = document.querySelector('.login-form .login');
 btn?.addEventListener('click', function (e) {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;

@@ -31,3 +31,9 @@ exports.login = catchAsync(async (req, res) => {
     title: 'login page',
   });
 });
+
+exports.signup = catchAsync(async (req, res) => {
+  return res.render('signup', {
+    title: 'signup page',
+  });
+});
