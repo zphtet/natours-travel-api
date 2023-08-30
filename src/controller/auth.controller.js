@@ -71,13 +71,13 @@ const protect = catchAsync(async (req, res, next) => {
 
 const isLoggedIn = async (req, res, next) => {
   // get token from headers
-  console.log(req.headers?.cookie);
+  // console.log(req.headers?.cookie);
   const idx = req.headers?.cookie?.indexOf('jwt');
   if (idx === -1 || !idx) return next();
   const jwtCookie = req.headers?.cookie?.slice(idx + 4);
 
   // check token
-  if (!jwtCookie || jwtCookie == 'logouted') return next();
+  if (!jwtCookie || jwtCookie.length < 15) return next();
   // verify token
   const decoded = jwt.verify(jwtCookie, process.env.JWT_SECRET_KEY);
   // user still exist

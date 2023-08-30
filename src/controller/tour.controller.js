@@ -158,7 +158,6 @@ const deleteTour = deleteOneById(TourModel);
 const updateTour = updateOneById(TourModel);
 const getTour = getOneById(TourModel, { path: 'reviews' });
 const getTours = getAll(TourModel);
-// findByIdAndDelete()
 module.exports = {
   createTour,
   deleteTours,
