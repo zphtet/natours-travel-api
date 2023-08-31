@@ -1,6 +1,5 @@
 const userModel = require('../model/userModel');
-const jwt = require('jsonwebtoken');
-const AppError = require('../utils/AppError.js');
+
 const {
   deleteOneById,
   updateOneById,
@@ -23,17 +22,8 @@ const filterOnlyEmailName = (req, res, next) => {
 
   if (name) updateObj.name = name;
   if (email) updateObj.email = email;
-
-  let jwtToken = req.headers.authorization?.split(' ')[1];
-  if (!jwtToken) return next(new AppError('jwt token not defined', 401));
-  // verify token
-  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
-  if (!decoded.id) return next(new AppError('Invalid Id', 401));
-
-  const userId = decoded.id;
-
   req.body = updateObj;
-  req.params.id = userId;
+  req.params.id = req.user._id;
   next();
 };
 

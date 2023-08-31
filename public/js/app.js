@@ -1,5 +1,3 @@
-console.log('hello');
-
 import { login } from './login.js';
 import { Alert } from './alert.js';
 // login
@@ -25,4 +23,26 @@ logoutLink?.addEventListener('click', async function (e) {
   setTimeout(() => {
     window.location.pathname = '/';
   }, 100);
+});
+
+// user settings
+
+const settingForm = document.querySelector('.form-user-data');
+const setName = document.querySelector('.form-user-data #name');
+const setEmail = document.querySelector('.form-user-data #email');
+settingForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const user = await fetch('http://localhost:8000/api/users/updateinfo', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: setName.value,
+      email: setEmail.value,
+    }),
+  });
+  const data = await user.json();
+
+  console.log(data);
 });

@@ -124,8 +124,6 @@ const signup = catchAsync(async function (req, res, next) {
 });
 
 const signin = catchAsync(async function (req, res, next) {
-  console.log(req.body);
-  console.log('from singin controller');
   const { email, password } = req.body;
   // find user on database
   const user = await userModel.findOne({ email }).select('+password');
