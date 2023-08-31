@@ -1,12 +1,19 @@
-const ErrorDev = (err, res) => {
-  return res.status(err.statusCode).json({
-    status: err.status,
+const ErrorDev = (err, req, res) => {
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      message: err.message,
+      error: err,
+    });
+  }
+
+  return res.render('error', {
+    title: 'Error Page',
     message: err.message,
-    error: err,
   });
 };
 
-const ErrorProd = (err, res) => {
+const ErrorProd = (err, req, res) => {
   return res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -18,9 +25,9 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'fail';
   if (process.env.NODE_ENV === 'development') {
-    return ErrorDev(err, res);
+    return ErrorDev(err, req, res);
   } else {
     console.log('it work');
-    return ErrorProd(err, res);
+    return ErrorProd(err, req, res);
   }
 };

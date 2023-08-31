@@ -37,3 +37,9 @@ exports.signup = catchAsync(async (req, res) => {
     title: 'signup page',
   });
 });
+
+exports.getProifile = catchAsync(async (req, res) => {
+  return res.render('me', {
+    title: 'My Profile',
+  });
+});
