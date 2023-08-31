@@ -64,6 +64,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   // pass the user to the next middleware
   req.user = user;
+  // console.log(user);
   res.locals.user = user;
   next();
 });
@@ -127,9 +128,11 @@ const signin = catchAsync(async function (req, res, next) {
   const { email, password } = req.body;
   // find user on database
   const user = await userModel.findOne({ email }).select('+password');
+  console.log(user, 'from model signin');
   if (!user) return next(new AppError('Invalid User or Password', 401));
   // check password equal
   const isPasswordEqual = await bcrypt.compare(password, user.password);
+  console.log(isPasswordEqual, 'from password equal');
   if (!user || !isPasswordEqual)
     return next(new AppError('Invalid email or password', 401));
 
@@ -213,15 +216,11 @@ const resetPassword = catchAsync(async function (req, res, next) {
 const updatePasswrod = catchAsync(async function (req, res, next) {
   const { currentPassword, newPassword, confirmNewPassword } = req.body;
 
-  let jwtToken = req.headers.authorization?.split(' ')[1];
-  // console.log(jwtToken);
-  // check token
-  if (!jwtToken) return next(new AppError('jwt token not defined', 401));
-  // verify token
-  const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
-  // user still exist
-  const user = await userModel.findOne({ _id: decoded.id }).select('+password');
+  const user = await userModel
+    .findOne({ _id: req.user._id })
+    .select('+password');
   if (!user) return next(new AppError('User no longer exist', 404));
+  // console.log(req.body, req.user.password);
   const isPasswordEqual = await bcrypt.compare(currentPassword, user.password);
   if (!isPasswordEqual)
     return next(new AppError('Incorrect current password', 400));
@@ -234,6 +233,7 @@ const updatePasswrod = catchAsync(async function (req, res, next) {
   user.confirmPassword = confirmNewPassword;
   await user.save();
 
+  console.log('after saved');
   return res.status(200).json({
     status: 'success',
   });

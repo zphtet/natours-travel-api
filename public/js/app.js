@@ -46,3 +46,36 @@ settingForm?.addEventListener('submit', async (e) => {
 
   console.log(data);
 });
+
+// update password
+
+const passwordForm = document.querySelector('.form-user-settings');
+
+const curPassInput = passwordForm?.querySelector('#password-current');
+const passInput = passwordForm?.querySelector('#password');
+const passConfirmInput = passwordForm?.querySelector('#password-confirm');
+
+passwordForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const passObj = {
+    currentPassword: curPassInput.value,
+    newPassword: passInput.value,
+    confirmNewPassword: passConfirmInput.value,
+  };
+
+  const resp = await fetch('http://localhost:8000/api/updatepassword', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(passObj),
+  });
+  const data = await resp.json();
+  if (data.status == 'success') {
+    Alert('success', 'Password Changed Successfully ');
+    setTimeout(() => {
+      alert('Login Again');
+      window.location.pathname = '/login';
+    }, 1000);
+  }
+});
