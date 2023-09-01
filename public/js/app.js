@@ -30,21 +30,45 @@ logoutLink?.addEventListener('click', async function (e) {
 const settingForm = document.querySelector('.form-user-data');
 const setName = document.querySelector('.form-user-data #name');
 const setEmail = document.querySelector('.form-user-data #email');
+const setPhoto = document.querySelector('.form-user-data #photo');
 settingForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
+
+  console.dir(setPhoto.files[0]);
+
+  const fdata = new FormData();
+  fdata.append('photo', setPhoto.files[0]);
+  fdata.append('name', setName.value);
+  fdata.append('email', setEmail.value);
+
   const user = await fetch('http://localhost:8000/api/users/updateinfo', {
     method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: setName.value,
-      email: setEmail.value,
-    }),
+    body: fdata,
   });
   const data = await user.json();
+  if (data.status === 'success') location.reload();
 
-  console.log(data);
+  // const user = await fetch('http://localhost:8000/api/users/updateinfo', {
+  //   method: 'PATCH',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     name: setName.value,
+  //     email: setEmail.value,
+  //   }),
+  // });
+
+  // const fdata = new FormData();
+  // fdata.append('photo', setPhoto.files[0]);
+  // fdata.append('name', 'david backend');
+  // // console.log(data);
+  // const resp = await fetch('http://localhost:8000/uploadphoto', {
+  //   method: 'PATCH',
+  //   body: fdata,
+  // });
+  // const data = await resp.json();
+  // console.log(data);
 });
 
 // update password

@@ -1252,6 +1252,11 @@ body {
   /* Pseudo element (a visible thing that isn't really in the DOM).
       Also needs -ms- */
 }
+.input__photo {
+  background-color: #20bf6b;
+  color: #e0e0e0;
+  cursor: pointer;
+}
 .form__input:focus {
   outline: none;
   border-bottom: 3px solid #55c57a;

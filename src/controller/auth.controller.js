@@ -42,6 +42,8 @@ const generateTokenAndSendResponse = function (res, user) {
 
 const protect = catchAsync(async (req, res, next) => {
   // get token from headers
+  console.log('from protect', req.body);
+  console.log(req.file);
   const jwtCookie = req.headers?.cookie?.slice(
     req.headers.cookie.indexOf('jwt') + 4
   );
@@ -74,10 +76,11 @@ const protect = catchAsync(async (req, res, next) => {
 const isLoggedIn = async (req, res, next) => {
   // get token from headers
   // console.log(req.headers?.cookie);
-  const idx = req.headers?.cookie?.indexOf('jwt');
-  if (idx === -1 || !idx) return next();
-  const jwtCookie = req.headers?.cookie?.slice(idx + 4);
-
+  // const idx = req.headers?.cookie?.indexOf('jwt');
+  // if (idx === -1 || !idx) return next();
+  const jwtCookie = req.cookies?.jwt;
+  // console.log(req.cookies, 'cookies');
+  // console.log(jwtCookie, 'cookie');
   // check token
   if (!jwtCookie || jwtCookie.length < 15) return next();
   // verify token
@@ -128,11 +131,11 @@ const signin = catchAsync(async function (req, res, next) {
   const { email, password } = req.body;
   // find user on database
   const user = await userModel.findOne({ email }).select('+password');
-  console.log(user, 'from model signin');
+  // console.log(user, 'from model signin');
   if (!user) return next(new AppError('Invalid User or Password', 401));
   // check password equal
   const isPasswordEqual = await bcrypt.compare(password, user.password);
-  console.log(isPasswordEqual, 'from password equal');
+  // console.log(isPasswordEqual, 'from password equal');
   if (!user || !isPasswordEqual)
     return next(new AppError('Invalid email or password', 401));
 

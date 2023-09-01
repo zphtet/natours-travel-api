@@ -27,6 +27,14 @@ const filterOnlyEmailName = (req, res, next) => {
   next();
 };
 
+const addPhototoBody = (req, res, next) => {
+  if (!req.file) return next();
+  req.body.photo = req.file?.filename;
+  console.log('from add photo');
+  console.log(req.body);
+  next();
+};
+
 const getMeId = (req, res, next) => {
   req.params.id = req.user._id;
   next();
@@ -49,4 +57,5 @@ module.exports = {
   getUser,
   getMeId,
   getMe,
+  addPhototoBody,
 };

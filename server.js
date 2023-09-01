@@ -13,7 +13,10 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+
 const PORT = 8000;
+
+// const upload = multer({ dest: './public/upload/' });
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -52,7 +55,26 @@ app.use(hpp('/', hpp()));
 
 // ROUTES
 
+app.use(function (req, res, next) {
+  // console.log(req.cookies);
+  next();
+});
+
 // app.get('/hello', (req, res) => res.json({ status: 'success', tour: 'hell' }));
+
+// app.patch('/uploadphoto', upload?.single('photo'), (req, res) => {
+//   // console.log(req.file);
+//   // console.log(req.body.name);
+//   console.log('to update data');
+//   console.log({
+//     ...req.body,
+//     photo: req.file.filename,
+//   });
+//   return res.status(200).json({
+//     status: 'success',
+//   });
+// });
+
 app.use(viewRouter);
 app.use('/api/tours', tourRouter);
 app.use('/api/users', userRouter);
