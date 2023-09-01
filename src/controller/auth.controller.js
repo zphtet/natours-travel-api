@@ -42,7 +42,7 @@ const generateTokenAndSendResponse = function (res, user) {
 
 const protect = catchAsync(async (req, res, next) => {
   // get token from headers
-  console.log('from protect', req.body);
+  // console.log('from protect', req.body);
   console.log(req.file);
   const jwtCookie = req.headers?.cookie?.slice(
     req.headers.cookie.indexOf('jwt') + 4

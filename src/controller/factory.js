@@ -27,7 +27,7 @@ const updateOneById = (Model) =>
     console.log('I am working');
     const { id } = req.params;
     if (req.file) req.body.photo = req.file.filename;
-    console.log(req.body);
+    // console.log(req.body);
     const data = await Model.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
