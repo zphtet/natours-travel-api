@@ -4,6 +4,7 @@ const ErrorDev = (err, req, res) => {
       status: err.status,
       message: err.message,
       error: err,
+      stack: err.stack,
     });
   }
 

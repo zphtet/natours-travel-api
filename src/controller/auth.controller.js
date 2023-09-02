@@ -115,6 +115,8 @@ const checkPermission = (...roles) => {
 
 const signup = catchAsync(async function (req, res, next) {
   const { name, email, password, confirmPassword, role, photo } = req.body;
+  const reqUrl = `${req.protocol}://${req.get('host')}/me`;
+
   const returnUser = await userModel.create({
     name,
     email,
@@ -123,6 +125,8 @@ const signup = catchAsync(async function (req, res, next) {
     role,
     photo,
   });
+
+  await sendEmail(returnUser, reqUrl, 'welcome');
 
   generateTokenAndSendResponse(res, returnUser);
 });
@@ -149,7 +153,7 @@ const forgotPassword = catchAsync(async function (req, res, next) {
   if (!user) return next(new AppError("User doesn't exist", 404));
   // 2 ) if exist , generate token for password reset
 
-  const { resetToken, resetPasswordToken, resetTokenExpire } =
+  let { resetToken, resetPasswordToken, resetTokenExpire } =
     user.passwordResetToken();
   await userModel.updateOne(
     { email },
@@ -163,15 +167,9 @@ const forgotPassword = catchAsync(async function (req, res, next) {
   const reqUrl = `${req.protocol}://${req.get(
     'host'
   )}/resetpassword/${resetToken}`;
-  console.log(resetToken);
-  const message = `This is the password reset link for you . ${reqUrl}  (this will expire in 10 min)`;
-  let option = {
-    email: user.email,
-    subject: `Password Reset Link - ${reqUrl}`,
-    text: message,
-  };
+
   try {
-    await sendEmail(option);
+    await sendEmail(user, reqUrl, 'passwordReset');
     return res.status(200).json({
       status: 'success',
       message: 'Reset link sent to your email . ',
