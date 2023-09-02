@@ -11,6 +11,7 @@ const AppError = require('./src/utils/AppError');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
+const bodyParser = require('body-parser');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 
@@ -33,6 +34,9 @@ require('dotenv').config();
 
 // GLOBAL MIDDLEWARE
 
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 // prse json file
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
@@ -59,21 +63,6 @@ app.use(function (req, res, next) {
   // console.log(req.cookies);
   next();
 });
-
-// app.get('/hello', (req, res) => res.json({ status: 'success', tour: 'hell' }));
-
-// app.patch('/uploadphoto', upload?.single('photo'), (req, res) => {
-//   // console.log(req.file);
-//   // console.log(req.body.name);
-//   console.log('to update data');
-//   console.log({
-//     ...req.body,
-//     photo: req.file.filename,
-//   });
-//   return res.status(200).json({
-//     status: 'success',
-//   });
-// });
 
 app.use(viewRouter);
 app.use('/api/tours', tourRouter);

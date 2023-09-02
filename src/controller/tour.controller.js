@@ -1,7 +1,9 @@
-const reviewModel = require('../model/reviewModel');
 const TourModel = require('../model/tourModel');
-const AppError = require('../utils/AppError');
+
 const catchAsync = require('../utils/catchAsync');
+
+const { protect } = require('../controller/auth.controller');
+
 const {
   deleteOneById,
   createOne,
@@ -19,6 +21,14 @@ function topFiveMiddleware(req, res, next) {
   req.query.limit = 5;
   next();
 }
+
+const convertImgArr = (req, res, next) => {
+  const imageCover = req.files.imageCover[0].filename;
+  const imgArr = req.files.images.map(({ filename }) => filename);
+  req.body.images = imgArr;
+  req.body.imageCover = imageCover;
+  next();
+};
 
 //Controller functions
 
@@ -153,11 +163,11 @@ const getDistanceWithinByMile = catchAsync(async function (req, res, next) {
 
 // from factory funs
 
+const getTour = getOneById(TourModel, { path: 'reviews' });
+const getTours = getAll(TourModel);
 const createTour = createOne(TourModel);
 const deleteTour = deleteOneById(TourModel);
 const updateTour = updateOneById(TourModel);
-const getTour = getOneById(TourModel, { path: 'reviews' });
-const getTours = getAll(TourModel);
 module.exports = {
   createTour,
   deleteTours,
@@ -171,4 +181,5 @@ module.exports = {
   getTour,
   getDistance,
   getDistanceWithinByMile,
+  convertImgArr,
 };

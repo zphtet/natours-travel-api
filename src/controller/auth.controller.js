@@ -236,7 +236,6 @@ const updatePasswrod = catchAsync(async function (req, res, next) {
   user.confirmPassword = confirmNewPassword;
   await user.save();
 
-  console.log('after saved');
   return res.status(200).json({
     status: 'success',
   });

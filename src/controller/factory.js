@@ -24,7 +24,6 @@ const createOne = (Model) =>
 
 const updateOneById = (Model) =>
   catchAsync(async function (req, res, next) {
-    console.log('I am working');
     const { id } = req.params;
     if (req.file) req.body.photo = req.file.filename;
     // console.log(req.body);
