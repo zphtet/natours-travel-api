@@ -103,3 +103,23 @@ passwordForm?.addEventListener('submit', async (e) => {
     }, 1000);
   }
 });
+
+// Booking tour
+
+const bookTourBtn = document.querySelector('#book-tour-btn');
+
+bookTourBtn?.addEventListener('click', async function (e) {
+  console.log(this.dataset.tourid);
+  const { tourid } = this.dataset;
+  const resp = await fetch('http://localhost:8000/create-checkout-session', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      tourid,
+    }),
+  });
+  const data = await resp.json();
+  window.location.href = data.url;
+});
