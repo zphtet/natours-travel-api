@@ -1,5 +1,6 @@
 import { login } from './login.js';
 import { Alert } from './alert.js';
+// import Stripe from '../../node_modules/stripe/esm/stri';
 // login
 const btn = document.querySelector('.login-form .login');
 btn?.addEventListener('click', function (e) {
@@ -123,3 +124,18 @@ bookTourBtn?.addEventListener('click', async function (e) {
   const data = await resp.json();
   window.location.href = data.url;
 });
+
+//
+
+// (async () => {
+//   const { paymentIntent, error } = await Stripe.confirmCardPayment(
+//     pk_test_51NmchlD6x3glzp8SUsOKMT8pxP1TnWwKITEfOBbaQgtjI7owNLr32WVnoL4HmsnpMejslt31MDAS1O3UHrfPJmGF00a879hKhw
+//   );
+//   if (error) {
+//     // Handle error here
+//     console.log('fail payment');
+//   } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+//     // Handle successful payment here
+//     console.log('success payment');
+//   }
+// })();

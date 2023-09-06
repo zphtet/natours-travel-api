@@ -95,6 +95,7 @@ const isLoggedIn = async (req, res, next) => {
 
   // pass the user to the next middleware
   res.locals.user = user;
+  req.user = user;
 
   next();
 };

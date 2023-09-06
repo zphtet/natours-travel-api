@@ -9,13 +9,7 @@ const TourModel = require('../model/tourModel');
 
 exports.getTourAndPass = catchAsync(async (req, res, next) => {
   const { tourid } = req.body;
-  console.log('tourid', tourid);
   const data = await TourModel.findById(tourid);
-  //   console.log(data);
-  //   return res.status(200).json({
-  //     status: 'success',
-  //     tour: data,
-  //   });
   req.tour = data;
   next();
 });
@@ -23,11 +17,8 @@ exports.getTourAndPass = catchAsync(async (req, res, next) => {
 const YOUR_DOMAIN = 'http://localhost:8000';
 
 exports.bookTour = async (req, res) => {
-  // get user
-
   // get tour
-  const { name, price } = req.tour;
-  //   console.log(name, price);
+  const { name, price, imageCover } = req.tour;
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -36,26 +27,25 @@ exports.bookTour = async (req, res) => {
           currency: 'usd',
           product_data: {
             name: name,
-            // images: ['https://i.imgur.com/EHyR2nP.png'],
+            images: [`https://www.natours.dev/img/tours/${imageCover}`],
           },
           unit_amount: price * 100,
         },
-        // adjustable_quantity: {
-        //   enabled: true,
-        //   minimum: 1,
-        //   maximum: 10,
-        // },
+
         quantity: 1,
       },
     ],
     mode: 'payment',
+    // customer: customer.id,
+    customer_email: req.user.email,
     // allow_promotion_codes: true,
     success_url: `${YOUR_DOMAIN}/success.html`,
     cancel_url: `${YOUR_DOMAIN}/cancel.html`,
   });
-  //   console.log(session);
+  // here we will put db insert code
 
-  //   res.redirect(303, session.url);
+  // console.log(session.url);
+
   return res.status(200).json({
     status: 'success',
     url: session.url,
