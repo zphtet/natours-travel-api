@@ -48,28 +48,6 @@ settingForm?.addEventListener('submit', async (e) => {
   });
   const data = await user.json();
   if (data.status === 'success') location.reload();
-
-  // const user = await fetch('http://localhost:8000/api/users/updateinfo', {
-  //   method: 'PATCH',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     name: setName.value,
-  //     email: setEmail.value,
-  //   }),
-  // });
-
-  // const fdata = new FormData();
-  // fdata.append('photo', setPhoto.files[0]);
-  // fdata.append('name', 'david backend');
-  // // console.log(data);
-  // const resp = await fetch('http://localhost:8000/uploadphoto', {
-  //   method: 'PATCH',
-  //   body: fdata,
-  // });
-  // const data = await resp.json();
-  // console.log(data);
 });
 
 // update password
@@ -125,17 +103,37 @@ bookTourBtn?.addEventListener('click', async function (e) {
   window.location.href = data.url;
 });
 
-//
+// signup
+const signupForm = document.querySelector('.signup-form');
+const signupName = document.querySelector('.signup-form #name');
+const singupEmail = document.querySelector('.signup-form #email');
+const singupPassword = document.querySelector('.signup-form #password');
+const signupBtn = document.querySelector('.signup-form button');
+signupForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!signupName.value || !singupEmail.value || !singupPassword.value) return;
 
-// (async () => {
-//   const { paymentIntent, error } = await Stripe.confirmCardPayment(
-//     pk_test_51NmchlD6x3glzp8SUsOKMT8pxP1TnWwKITEfOBbaQgtjI7owNLr32WVnoL4HmsnpMejslt31MDAS1O3UHrfPJmGF00a879hKhw
-//   );
-//   if (error) {
-//     // Handle error here
-//     console.log('fail payment');
-//   } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-//     // Handle successful payment here
-//     console.log('success payment');
-//   }
-// })();
+  const signupObj = {
+    name: signupName.value,
+    email: singupEmail.value,
+    password: singupPassword.value,
+  };
+
+  console.log('singn up', signupObj);
+  signupBtn.innerHTML = 'signing up...';
+  const resp = await fetch('http://localhost:8000/api/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(signupObj),
+  });
+  const data = await resp.json();
+  signupBtn.innerHTML = 'Finished';
+  if (data.status == 'success') {
+    Alert('success', 'Signup Successfull ');
+    window.location.pathname = '/';
+  } else {
+    Alert('error', 'Error in Signup ');
+  }
+});
