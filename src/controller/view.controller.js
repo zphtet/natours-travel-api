@@ -4,14 +4,14 @@ const axios = require('axios');
 
 exports.getOverview = catchAsync(async (req, res) => {
   // const resp = await axios.get(`${process.env.URL}/api/tours`);
-  const resp = await axios.get(`/api/tours`);
-
-  const data = resp.data.data.data;
+  // const resp = await axios.get(`/api/tours`);
+  let resp = await TourModel.find({});
+  // const data = resp.data.data.data;
 
   return res.render('overview', {
     title: 'All tours',
     message: 'Sever-side rendering with pug engine',
-    data,
+    data: resp,
   });
 });
 
