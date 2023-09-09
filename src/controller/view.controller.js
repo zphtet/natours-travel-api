@@ -3,7 +3,9 @@ const catchAsync = require('../utils/catchAsync');
 const axios = require('axios');
 
 exports.getOverview = catchAsync(async (req, res) => {
-  const resp = await axios.get(`${process.env.URL}/api/tours`);
+  // const resp = await axios.get(`${process.env.URL}/api/tours`);
+  const resp = await axios.get(`/api/tours`);
+
   const data = resp.data.data.data;
 
   return res.render('overview', {

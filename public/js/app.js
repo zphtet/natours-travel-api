@@ -1,8 +1,8 @@
 import { login } from './login.js';
 import { Alert } from './alert.js';
 
-const URL = 'http://localhost:8000';
-
+let URL = '';
+// URL = process.env.PORT;
 // login
 const btn = document.querySelector('.login-form .login');
 btn?.addEventListener('click', function (e) {
