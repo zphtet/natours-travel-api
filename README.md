@@ -67,3 +67,10 @@ MAIL_PASS =
 There are many api end points that are not implemented in frontend .
 
 [Demo Link frontend](https://natours-travel-6ypt.onrender.com)
+
+User to login
+
+```
+ email - max@example.com
+ password - test1234
+```
