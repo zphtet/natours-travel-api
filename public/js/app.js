@@ -1,7 +1,7 @@
 import { login } from './login.js';
 import { Alert } from './alert.js';
 
-let URL = 'http://localhost:8000';
+let URL = window.location.origin;
 // URL = process.env.PORT;
 // login
 const btn = document.querySelector('.login-form .login');
