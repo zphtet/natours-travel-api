@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 // const upload = multer({ dest: './public/upload/' });
 

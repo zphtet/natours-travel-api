@@ -19,10 +19,10 @@ async function sendEmail(user, url, type) {
   });
 
   await transporter.sendMail({
-    from: 'zph@gmail.com', // sender address
+    from: 'admin@gmail.com', // sender address
     to: user.email, // list of receivers
     subject: subject, // Subject line
-    text: `This is the password reset link ${url} (valid 10 min)`, // plain text body
+    text: `This is the password reset link ${url} (valid 10 min)`, // plain text
     html: `${html}`,
   });
 }

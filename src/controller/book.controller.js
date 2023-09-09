@@ -44,8 +44,6 @@ exports.bookTour = async (req, res) => {
   });
   // here we will put db insert code
 
-  // console.log(session.url);
-
   return res.status(200).json({
     status: 'success',
     url: session.url,

@@ -1,6 +1,8 @@
 import { login } from './login.js';
 import { Alert } from './alert.js';
-// import Stripe from '../../node_modules/stripe/esm/stri';
+
+const URL = 'http://localhost:8000';
+
 // login
 const btn = document.querySelector('.login-form .login');
 btn?.addEventListener('click', function (e) {
@@ -20,7 +22,7 @@ const logoutLink = document.querySelector('.logout');
 logoutLink?.addEventListener('click', async function (e) {
   alert('Want to loguout ?');
   Alert('success', 'logging out .... ');
-  await fetch('http://localhost:8000/api/logout');
+  await fetch(`${URL}/api/logout`);
   setTimeout(() => {
     window.location.pathname = '/';
   }, 100);
@@ -42,7 +44,7 @@ settingForm?.addEventListener('submit', async (e) => {
   fdata.append('name', setName.value);
   fdata.append('email', setEmail.value);
 
-  const user = await fetch('http://localhost:8000/api/users/updateinfo', {
+  const user = await fetch(`${URL}/api/users/updateinfo`, {
     method: 'PATCH',
     body: fdata,
   });
@@ -66,7 +68,7 @@ passwordForm?.addEventListener('submit', async (e) => {
     confirmNewPassword: passConfirmInput.value,
   };
 
-  const resp = await fetch('http://localhost:8000/api/updatepassword', {
+  const resp = await fetch(`${URL}/api/updatepassword`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ const bookTourBtn = document.querySelector('#book-tour-btn');
 bookTourBtn?.addEventListener('click', async function (e) {
   console.log(this.dataset.tourid);
   const { tourid } = this.dataset;
-  const resp = await fetch('http://localhost:8000/create-checkout-session', {
+  const resp = await fetch(`${URL}/create-checkout-session`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -121,7 +123,7 @@ signupForm?.addEventListener('submit', async (e) => {
 
   console.log('singn up', signupObj);
   signupBtn.innerHTML = 'signing up...';
-  const resp = await fetch('http://localhost:8000/api/signup', {
+  const resp = await fetch(`${URL}/api/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -2,20 +2,6 @@ const multer = require('multer');
 const sharp = require('sharp');
 // multer
 
-// const storage = multer.diskStorage({
-//   destination: async function (req, file, cb) {
-//     console.log('file', file);
-//     console.log('req.file', req.file);
-
-//     cb(null, './public/img/users/');
-//   },
-//   filename: function (req, file, cb) {
-//     const exten = file.mimetype.split('/')[1];
-//     const fileName = `user-${req.user._id}-${Date.now()}.${exten}`;
-//     cb(null, fileName);
-//   },
-// });
-
 const filterFile = (req, file, cb) => {
   const isValid = file.mimetype.startsWith('image');
   if (isValid) {

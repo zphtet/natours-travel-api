@@ -42,8 +42,6 @@ const generateTokenAndSendResponse = function (res, user) {
 
 const protect = catchAsync(async (req, res, next) => {
   // get token from headers
-  // console.log('from protect', req.body);
-  console.log(req.file);
   const jwtCookie = req.headers?.cookie?.slice(
     req.headers.cookie.indexOf('jwt') + 4
   );
@@ -66,7 +64,8 @@ const protect = catchAsync(async (req, res, next) => {
 
   // pass the user to the next middleware
   req.user = user;
-  // console.log(user);
+
+
   res.locals.user = user;
   next();
 });
@@ -74,14 +73,8 @@ const protect = catchAsync(async (req, res, next) => {
 // protect frontend view route
 
 const isLoggedIn = async (req, res, next) => {
-  // get token from headers
-  // console.log(req.headers?.cookie);
-  // const idx = req.headers?.cookie?.indexOf('jwt');
-  // if (idx === -1 || !idx) return next();
   const jwtCookie = req.cookies?.jwt;
-  // console.log(req.cookies, 'cookies');
-  // console.log(jwtCookie, 'cookie');
-  // check token
+
   if (!jwtCookie || jwtCookie.length < 15) return next();
   // verify token
   const decoded = jwt.verify(jwtCookie, process.env.JWT_SECRET_KEY);
@@ -136,11 +129,9 @@ const signin = catchAsync(async function (req, res, next) {
   const { email, password } = req.body;
   // find user on database
   const user = await userModel.findOne({ email }).select('+password');
-  // console.log(user, 'from model signin');
   if (!user) return next(new AppError('Invalid User or Password', 401));
   // check password equal
   const isPasswordEqual = await bcrypt.compare(password, user.password);
-  // console.log(isPasswordEqual, 'from password equal');
   if (!user || !isPasswordEqual)
     return next(new AppError('Invalid email or password', 401));
 
@@ -222,7 +213,6 @@ const updatePasswrod = catchAsync(async function (req, res, next) {
     .findOne({ _id: req.user._id })
     .select('+password');
   if (!user) return next(new AppError('User no longer exist', 404));
-  // console.log(req.body, req.user.password);
   const isPasswordEqual = await bcrypt.compare(currentPassword, user.password);
   if (!isPasswordEqual)
     return next(new AppError('Incorrect current password', 400));
