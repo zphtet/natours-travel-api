@@ -3,7 +3,7 @@ import { Alert } from './alert.js';
 export const login = async (obj) => {
   console.log(obj);
   try {
-    const resp = await fetch(`http://localhost:8000/api/login`, {
+    const resp = await fetch(`${window.location.origin}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
